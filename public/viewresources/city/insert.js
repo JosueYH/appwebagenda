@@ -43,8 +43,14 @@ function sendFrmCityInsert() {
       $('#frmCityInsert')[0].submit();
 
     // Mostrar el mensaje de éxito utilizando Notify
-    $.notify('Se ha registrado correctamente', 'success');
+    $.notify('Se ha registrado correctamente🙂', 'success');
     }
-  });
+
+    else {
+    // Código a ejecutar si se cancela o cierra el diálogo
+    $.notify('La inserción fue cancelada😢', 'warning');
+    }
+
+   });
 }
 

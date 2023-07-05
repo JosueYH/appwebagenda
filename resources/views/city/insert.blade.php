@@ -21,6 +21,6 @@
 <script src="{{asset('viewresources/city/insert.js')}}"></script>
 <script src="{{asset('plugins/sweetalert2/sweetAlert.all.min.js')}}"></script>
 <!--<scrript src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>-->
-<script src="{{asset('plugins/notify/sweetAlert.all.min.js')}}"></script>
+<script src="{{asset('plugins/notify/notify.min.js')}}"></script>
 @endsection
 

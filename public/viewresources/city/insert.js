@@ -1,3 +1,4 @@
+
 'use strict';
 
 $(() => {
@@ -20,37 +21,82 @@ $(() => {
 });
 
 function sendFrmCityInsert() {
-  var isValid = null;
-
   $('#frmCityInsert').data('formValidation').resetForm();
   $('#frmCityInsert').data('formValidation').validate();
 
-  isValid = $('#frmCityInsert').data('formValidation').isValid();
-
-  if (!isValid) {
+  if (!$('#frmCityInsert').data('formValidation').isValid()) {
     return;
   }
 
-  Swal.fire({
+  const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: 'btn btn-success',
+      cancelButton: 'btn btn-danger'
+    },
+    buttonsStyling: false
+  });
+
+  swalWithBootstrapButtons.fire({
     title: 'Confirmar inserción',
     text: '¿Está seguro de que desea insertar el registro?',
-    icon: 'question',
+    icon: 'warning',
     showCancelButton: true,
-    confirmButtonText: 'Sí',
-    cancelButtonText: 'No'
+    confirmButtonText: 'Aceptar',
+    cancelButtonText: 'Cancelar',
+    reverseButtons: true
   }).then((result) => {
     if (result.isConfirmed) {
-      $('#frmCityInsert')[0].submit();
-
-    // Mostrar el mensaje de éxito utilizando Notify
-    $.notify('Se ha registrado correctamente🙂', 'success');
+      $('#frmCityInsert').submit();
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      resetFormFields(); // Restablece los campos del formulario
+      Swal.fire(
+        'Cancelado',
+        'Usted ha cancelado la inserción',
+        'error'
+      ).then(() => {
+        $.notify('usted ha cancelado la inserción 🙁', 'info');
+      });
     }
+  });
 
-    else {
-    // Código a ejecutar si se cancela o cierra el diálogo
-    $.notify('La inserción fue cancelada😢', 'warning');
-    }
+  $('#frmCityInsert').submit(function(event) {
+    event.preventDefault(); // Evita el envío del formulario por defecto
 
-   });
+    $.ajax({
+      url: $(this).attr('action'),
+      type: $(this).attr('method'),
+      data: $(this).serialize(),
+      success: function(response) {
+        resetFormFields(); // Restablece los campos del formulario
+        Swal.fire(
+          'Insertado',
+          'Se ha registrado correctamente',
+          'success'
+        ).then(() => {
+          $.notify('Se ha registrado correctamente 🙂', 'success');
+        });
+      },
+      error: function(xhr, status, error) {
+        Swal.fire(
+          'Error',
+          'Ocurrió un error al intentar insertar el registro',
+          'error'
+        ).then(() => {
+          $.notify('Ocurrió un error al insertar el registro 😢', 'warning');
+        });
+      }
+    });
+  });
 }
+
+function resetFormFields() {
+  $('#frmCityInsert')[0].reset(); // Restablece el formulario a su estado inicial
+  $('#frmCityInsert').data('formValidation').resetForm(); // Restablece la validación del formulario
+}
+
+
+
+
+
+
 
